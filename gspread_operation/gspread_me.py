@@ -21,6 +21,7 @@ import convert_num_to_alphabet
 #指定セルから連想配列を貼り付け
 #gspread_me.free(worksheet, list, startcell)
 def free(worksheet, list, startcell):
+
     df = pd.DataFrame(list)
     col_lastnum = len(df.columns) # DataFrameの列数
     row_lastnum = len(df.index)   # DataFrameの行数
@@ -30,8 +31,16 @@ def free(worksheet, list, startcell):
     start_cell_row = int(re.sub(r'[\D]', '', start_cell))
 
     # 展開を開始するセルからA1セルの差分
-    row_diff = start_cell_row - 1
     col_diff = convert_alphabet_to_num.A2num(start_cell_col) - convert_alphabet_to_num.A2num('A')
+    row_diff = start_cell_row - 1
+
+    # 最大列が足りない場合は追加
+    if worksheet.col_count < (col_lastnum + col_diff):
+        worksheet.add_cols((col_lastnum + col_diff) - worksheet.col_count)
+
+    # 最大行が足りない場合は追加
+    if worksheet.row_count < (row_lastnum + row_diff):
+        worksheet.add_rows((row_lastnum + row_diff) - worksheet.row_count)
 
     # DataFrameのヘッダーと中身をスプレッドシートの任意のセルから展開する
     cell_list = worksheet.range(start_cell + ':' + convert_num_to_alphabet.num2A(col_lastnum + col_diff) + str(row_lastnum + row_diff))
