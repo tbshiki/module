@@ -17,3 +17,9 @@ def split_list(list, n):
         yield list[idx:idx + n]
 
     #参考 https://www.python.ambitious-engineer.com/archives/1843
+
+# リストAからリストBを引く(AにはあってBにないものを抽出)
+def subtraction_list(lista, listb):
+    listresult = []
+    listresult = list(set(lista) - set(listb))
+    return listresult
