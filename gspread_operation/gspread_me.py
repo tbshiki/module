@@ -3,7 +3,7 @@
 #
 ##
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+#from oauth2client.service_account import ServiceAccountCredentials
 
 import pandas as pd
 import gspread
@@ -63,9 +63,10 @@ def just(worksheet, list, startcell, lastcell):
 def get(path, SPREADSHEET_KEY, sheet = 1):
 
     try:
-        scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(path, scope)
-        gc = gspread.authorize(credentials)
+        #scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+        #credentials = ServiceAccountCredentials.from_json_keyfile_name(path, scope)
+        #gc = gspread.authorize(credentials)
+        gc = gspread.service_account(filename = path)
         workbook = gc.open_by_key(SPREADSHEET_KEY)
     except:
         print('スプレッドシートが見つかりません')
@@ -83,9 +84,10 @@ def get(path, SPREADSHEET_KEY, sheet = 1):
 def get_book(path, SPREADSHEET_KEY):
 
     try:
-        scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(path, scope)
-        gc = gspread.authorize(credentials)
+        #scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
+        #credentials = ServiceAccountCredentials.from_json_keyfile_name(path, scope)
+        #gc = gspread.authorize(credentials)
+        gc = gspread.service_account(filename = path)
         workbook = gc.open_by_key(SPREADSHEET_KEY)
     except:
         print('スプレッドシートが見つかりません')
