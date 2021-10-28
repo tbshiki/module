@@ -35,7 +35,10 @@ class clickC():
         #クリック前のハンドル数を取得
         handles = len(driver.window_handles)
 
+        # 要素がウインドウ外だとエラーになるのでスクロールしておく
+        driver.execute_script("arguments[0].scrollIntoView();", element)
         actions = ActionChains(driver)
+        time.sleep(1)
 
         if platform.system() == 'Darwin':
             #Macなのでコマンドキー
@@ -46,7 +49,9 @@ class clickC():
             actions.key_down(Keys.CONTROL)
 
         actions.click(element)
+        time.sleep(1)
         actions.perform()
+        time.sleep(1)
 
         try:
             # 新しいタブが開くのを最大30秒まで待機
@@ -64,10 +69,14 @@ class clickC():
 
     def switchnew(driver, element):
         handle_list_befor = driver.window_handles
+
         clickC(driver, element)
+        time.sleep(1)
+
         handle_list_after = driver.window_handles
         handle_list_new = list(set(handle_list_after) - set(handle_list_befor))
         driver.switch_to.window(handle_list_new[0])
+        time.sleep(1)
 
 def chrome_scrolle(driver,scrolle_xpath,seconds=1):
     scrolle_point = driver.find_element_by_xpath(scrolle_xpath)
