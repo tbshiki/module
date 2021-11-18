@@ -2,7 +2,7 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 
-def main(file_type='all'):
+def main(file_type = 'all', selftitle = ''):
 
     ##
     # 引数 file_type
@@ -29,7 +29,10 @@ def main(file_type='all'):
 
     #一つ上のディレクトリを参照
     up_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    dir_path = tk.filedialog.askopenfilename(filetypes = file_types, initialdir = up_dir)
+    if selftitle == '':
+        dir_path = tk.filedialog.askopenfilename(filetypes = file_types, initialdir = up_dir)
+    else:
+        dir_path = tk.filedialog.askopenfilename(filetypes = file_types, initialdir = up_dir, title = selftitle)
     return dir_path
 
 if __name__=="__main__":
