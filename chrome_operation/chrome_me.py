@@ -6,6 +6,7 @@ from selenium.common.exceptions import TimeoutException
 
 import platform
 import time
+import os
 import sys
 from pathlib import Path
 
@@ -89,7 +90,7 @@ def chrome_scrolle(driver,scrolle_xpath,seconds=1):
 
 # 指定したフォルダの最新のファイルパスを取得する
 # ダウンロード待機参考:https://note.com/kohaku935/n/n87903c010d28
-def get_latest_file_path(path ,timeout_second = 30):
+def get_latest_file_path(path, timeout_second = 30):
 
     file_path = ''
 
@@ -110,3 +111,15 @@ def get_latest_file_path(path ,timeout_second = 30):
             raise Exception('Csv file cannnot be finished downloading!')
 
     return file_path
+
+# カレントハンドル以外のハンドル(タブ)を閉じてカレントハンドルに戻す
+def close_other_current_handle(driver, current_handle):
+    handles_array = driver.window_handles
+    for handle_ in handles_array:
+        if handle_ != current_handle:
+            driver.switch_to.window(handle_)
+            driver.close()
+            time.sleep(1)
+
+    driver.switch_to.window(current_handle)
+    time.sleep(1)
