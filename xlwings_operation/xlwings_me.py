@@ -1,16 +1,15 @@
 
 import xlwings as xw
-import sys
+from importlib import import_module
 
-# モジュールのあるパスを追加
-sys.path.append('../module')
-#数字とアルファベットを変換
-import convert_alphabet_to_num
-import convert_num_to_alphabet
+# 数字とアルファベットを変換
+convert_alphabet_to_num = import_module('convert_alphabet_to_num')
+convert_num_to_alphabet = import_module('convert_num_to_alphabet')
 
-# 1行目にデータの最大列を取得して、その全ての行の最大行を返す
+# 1行目の最大列を取得して、その全ての列から最大行を返す
 def all(sheet):
     max_col = sheet.range(1, sheet.cells.last_cell.column).end('left').column
+
     last_row = 1
     for i in range(max_col + 1)[1:]:
         max_row = sheet.range(sheet.cells.last_cell.row, i).end('up').row
@@ -18,17 +17,17 @@ def all(sheet):
             last_row = max_row
     return last_row
 
-# 1行目にデータの最大列を取得して、最大列と最大行を返す
+# 1行目の最大列を取得して、1行目の最大列とその全ての列から最大行を返す
 def last(sheet):
-    last_col_A = sheet.range(1, sheet.cells.last_cell.column).end('left').column
+    last_col = sheet.range(1, sheet.cells.last_cell.column).end('left').column
 
     last_row = 1
-    for i in range(last_col_A + 1)[1:]:
+    for i in range(last_col + 1)[1:]:
         max_row = sheet.range(sheet.cells.last_cell.row, i).end('up').row
         if max_row > last_row:
             last_row = max_row
 
-    return last_col_A,last_row
+    return last_col,last_row
 
 # 指定されたcolの最大行を返す
 def col(sheet, col):
