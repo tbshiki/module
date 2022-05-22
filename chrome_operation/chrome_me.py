@@ -10,18 +10,18 @@ import os
 import sys
 from pathlib import Path
 
-#cromedriverを起動
-#browser_operation.chrome_start(1, 30, 60,options)
+# cromedriverを起動
+# browser_operation.chrome_start(1, 30, 60,options)
 def chrome_start(seconds=1, wait=30, timeout=60, options=None):
-    #\githubの絶対パスを取得
+    # \githubの絶対パスを取得
     current_dir = Path(__file__).resolve().parent.parent.parent
 
-    if platform.system() == 'Windows': # Windows
-        driver = webdriver.Chrome(executable_path=str(current_dir) + '\chromedriver\chromedriver_win32\chromedriver.exe', options=options)
-    elif platform.system() == 'Darwin': # Mac
-        driver = webdriver.Chrome(executable_path=str(current_dir) + '\chromedriver\chromedriver_mac64\chromedriver', options=options)
-    elif platform.system() == 'Linux': # Linux
-        driver = webdriver.Chrome(executable_path=str(current_dir) + '\chromedriver\chromedriver_linux64\chromedriver', options=options)
+    if platform.system() == "Windows":  # Windows
+        driver = webdriver.Chrome(executable_path=str(current_dir) + "\chromedriver\chromedriver_win32\chromedriver.exe", options=options,)
+    elif platform.system() == "Darwin":  # Mac
+        driver = webdriver.Chrome(executable_path=str(current_dir) + "\chromedriver\chromedriver_mac64\chromedriver", options=options,)
+    elif platform.system() == "Linux":  # Linux
+        driver = webdriver.Chrome(executable_path=str(current_dir) + "\chromedriver\chromedriver_linux64\chromedriver", options=options,)
 
     driver.implicitly_wait(wait)  # 暗黙的な待機・要素が無い場合に最大30秒待機
     driver.set_page_load_timeout(timeout)  # ページが完全にロードされるまで最大で60秒間待つよう指定
@@ -29,13 +29,13 @@ def chrome_start(seconds=1, wait=30, timeout=60, options=None):
     time.sleep(seconds)
     return driver
 
-#コントロール押しながらクリック
-#browser_operation.click_C(driver, element)
-class clickC():
 
+# コントロール押しながらクリック
+# browser_operation.click_C(driver, element)
+class clickC:
     def __init__(self, driver, element):
 
-        #クリック前のハンドル数を取得
+        # クリック前のハンドル数を取得
         handles = len(driver.window_handles)
 
         # 要素がウインドウ外だとエラーになるのでスクロールしておく
@@ -43,12 +43,12 @@ class clickC():
         actions = ActionChains(driver)
         time.sleep(1)
 
-        if platform.system() == 'Darwin':
-            #Macなのでコマンドキー
+        if platform.system() == "Darwin":
+            # Macなのでコマンドキー
             actions.key_down(Keys.COMMAND)
 
         else:
-            #Mac以外なのでコントロールキー
+            # Mac以外なのでコントロールキー
             actions.key_down(Keys.CONTROL)
 
         actions.click(element)
@@ -60,12 +60,12 @@ class clickC():
             # 新しいタブが開くのを最大30秒まで待機
             WebDriverWait(driver, 30).until(lambda a: len(a.window_handles) > handles)
         except TimeoutException:
-            print('新しいタブが開かずタイムアウトしました')
+            print("新しいタブが開かずタイムアウトしました")
             sys.exit(1)
 
         time.sleep(1)
 
-    #コントロール押しながらクリックして一番右のタブに移動
+    # コントロール押しながらクリックして一番右のタブに移動
     def rightmost(driver, element):
         clickC(driver, element)
         driver.switch_to.window(driver.window_handles[-1])
@@ -81,36 +81,42 @@ class clickC():
         driver.switch_to.window(handle_list_new[0])
         time.sleep(1)
 
-def chrome_scrolle(driver,scrolle_xpath,seconds=1):
+
+def chrome_scrolle(driver, scrolle_xpath, seconds=1):
     scrolle_point = driver.find_element_by_xpath(scrolle_xpath)
     actions = ActionChains(driver)
     actions.move_to_element(scrolle_point)
     actions.perform()
     time.sleep(seconds)
 
+
 # 指定したフォルダの最新のファイルパスを取得する
 # ダウンロード待機参考:https://note.com/kohaku935/n/n87903c010d28
-def get_latest_file_path(path, timeout_second = 30):
+def get_latest_file_path(path, timeout_second=30, before_path=""):
 
-    file_path = ''
+    file_path = ""
 
     # 指定秒待機して最新ファイルが.crdownload.tmpでないことを確認
     for i in range(timeout_second + 1):
 
         if len(os.listdir(path)) != 0:
-            file_path = max([ os.path.join(path, f) for f in os.listdir(path)], key = os.path.getctime)
+            file_path = max([os.path.join(path, f) for f in os.listdir(path)], key=os.path.getctime)
 
-        if '.crdownload' in file_path or '.tmp' in file_path: #.crdownloadも.tmpなので一秒待機
+        if ".crdownload" in file_path or ".tmp" in file_path:  # .crdownloadも.tmpなので一秒待機
             time.sleep(1)
 
-        else: #.crdownloadも.tmpでもない為抜ける
+        elif before_path != "" and before_path in file_path:  # ファイルパスが変わらないので一秒待機
+            time.sleep(1)
+
+        else:  # .crdownloadも.tmpでもない為抜ける
             break
 
         # 指定時間待っても .crdownload .tmpのファイルが確認できない場合 エラー
         if i >= timeout_second:
-            raise Exception('Csv file cannnot be finished downloading!')
+            raise Exception("Csv file cannnot be finished downloading!")
 
     return file_path
+
 
 # カレントハンドル以外のハンドル(タブ)を閉じてカレントハンドルに戻す
 def close_other_current_handle(driver, current_handle):
