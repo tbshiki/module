@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 # cromedriverを起動
-# browser_operation.chrome_start(1, 30, 60,options)
+# browser_operation.chrome_start(1, 30, 60, options)
 def chrome_start(seconds=1, wait=30, timeout=60, options=None):
     # \githubの絶対パスを取得
     current_dir = Path(__file__).resolve().parent.parent.parent
