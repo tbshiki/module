@@ -185,11 +185,10 @@ def check_sheet_copy(sheet_source_name, wb_source=None, wb_destination=None, pos
         except:
             return False
 
-    try:
-        sh = wb_source.sheets[sheet_source_name].copy(before=wb_destination.sheets[position])
-    except:
-        sh = wb_source.sheets[sheet_source_name]
-        all_sh_name = [sh.name for sh in wb_destination.sheets]
+    all_sh_name = [sh.name for sh in wb_destination.sheets]
+
+    if sheet_source_name in all_sh_name:
+        # 同名シートが存在するので(*)を付ける
         counter = 2
 
         while True:
@@ -199,8 +198,9 @@ def check_sheet_copy(sheet_source_name, wb_source=None, wb_destination=None, pos
                     return False  # 50も作成してたらおかしいのでその場合はFalseを返す
             else:
                 break
+        sheet = wb_destination.sheets[sheet_source_name]
+        sheet.name = f"{sheet_source_name} ({counter})"
 
-        sh.name = f"{sheet_source_name} ({counter})"
-        sh = wb_source.sheets[sheet_source_name].copy(before=wb_destination.sheets[position])
+    add_sh = wb_source.sheets[sheet_source_name].copy(before=wb_destination.sheets[position])
 
-    return sh
+    return add_sh
