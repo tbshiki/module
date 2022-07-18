@@ -1,6 +1,6 @@
-from itsdangerous import want_bytes
 import xlwings as xw
 from importlib import import_module
+import os
 
 # 数字とアルファベットを変換
 convert_alphabet_to_num = import_module("convert_alphabet_to_num")
@@ -105,7 +105,6 @@ def FreezePanes(ws=None, wb=None, row=1, col=0):
 
 def FreezePanes0(ws=None, wb=None, row=0, col=0):
     """ウインドウ枠固定の解除
-
     Args:
         ws (_type_, optional): _description_. Defaults to xw.books.active.app.api.ActiveWindow.
         wb (_type_, optional): _description_. Defaults to xw.books.active.
@@ -124,6 +123,36 @@ def FreezePanes0(ws=None, wb=None, row=0, col=0):
     aw.FreezePanes = False
     aw.SplitColumn = 0
     aw.SplitRow = 0
+
+
+def check_wb_create(save_wb_path, extension=".xlsx"):
+    """同名のブックが存在するかチェックしてブック作成
+    Args:
+        book_name (str): ブック名
+        wb (xw.Book, optional): xw.Book. Defaults to None.
+        position (int, optional): 位置. Defaults to 0.
+
+    Returns:
+        bool: True:存在する, False:存在しない
+        wb: ワークブック
+    """
+
+    if os.path.exists(save_wb_path):
+        counter = 2
+        while True:
+            try:
+                os.rename(save_wb_path, str(os.path.splitext(save_wb_path)[0]) + " (" + str(counter) + ")" + extension)
+            except:
+                pass
+            else:
+                break
+            if counter > 50:  # 50も作成してたらおかしいので終了
+                return False
+            counter += 1
+    wb = xw.Book()
+    wb.save(save_wb_path)
+
+    return wb
 
 
 def check_sheet_add(sheet_name, wb=None, position=0):
