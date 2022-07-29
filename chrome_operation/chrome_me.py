@@ -98,23 +98,29 @@ def get_latest_file_path(path, timeout_second=30, before_path=""):
 
     # 指定秒待機して最新ファイルが.crdownload.tmpでないことを確認
     for i in range(timeout_second + 1):
-
-        if len(os.listdir(path)) != 0:
-            file_path = max([os.path.join(path, f) for f in os.listdir(path)], key=os.path.getctime)
-
-        if ".crdownload" in file_path or ".tmp" in file_path:  # .crdownloadも.tmpなので一秒待機
-            time.sleep(1)
-
-        elif before_path != "" and before_path in file_path:  # ファイルパスが変わらないので一秒待機
-            time.sleep(1)
-
-        else:  # .crdownloadも.tmpでもない為抜ける
-            break
-
-        # 指定時間待っても .crdownload .tmpのファイルが確認できない場合 エラー
+        # 指定時間待っても 最新ファイルが確認できない場合 エラーを返す
         if i >= timeout_second:
             raise Exception("Csv file cannnot be finished downloading!")
 
+        time.sleep(1)  # 1秒待機
+
+        if len(os.listdir(path)) != 0:  # フォルダ内にファイルがある場合
+            file_path = max([os.path.join(path, f) for f in os.listdir(path)], key=os.path.getctime)  # 最新のファイルを取得
+        else:
+            continue
+
+        if ".crdownload" in file_path or ".tmp" in file_path:  # .crdownloadも.tmpなので初めから
+            continue
+        else:
+            if before_path == "":
+                return file_path
+
+            else:  # before_path != ""
+                if before_path == file_path:  # ファイルパスが変わらないので初めから
+                    continue
+
+                else:
+                    return file_path
     return file_path
 
 
