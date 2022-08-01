@@ -107,7 +107,7 @@ def get_latest_file_path(path, timeout_second=30, before_path=""):
         if len(os.listdir(path)) != 0:  # フォルダ内にファイルがある場合
             file_path = max([os.path.join(path, f) for f in os.listdir(path)], key=os.path.getctime)  # 最新のファイルを取得
         else:
-            continue
+            file_path = path  # フォルダ内にファイルがない場合は指定したフォルダのパスを返す
 
         if ".crdownload" in file_path or ".tmp" in file_path:  # .crdownloadも.tmpなので初めから
             continue
